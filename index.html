@@ -3,25 +3,17 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Random Fun Fact Generator</title>
+  <title>Random Fun Fact</title>
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-  <header class="site-header">
-    <h1>Did You Know? 🤓</h1>
-    <p class="subtitle">Click for a fresh, API-powered fact.</p>
-  </header>
+  <h1>Did You Know? 🤓</h1>
 
-  <main class="container" aria-live="polite">
-    <p id="fact">Press the button to learn something cool!</p>
-    <button id="newFact" type="button" aria-controls="fact">New Fun Fact 🎲</button>
-    <div id="error" class="error" hidden></div>
-  </main>
+  <p id="fact">Click the button to get a fun fact!</p>
+  <button id="newFact">New Fun Fact 🎲</button>
 
-  <footer class="site-footer">
-    <small>Built with <code>fetch()</code> using the Cat Facts API.</small>
-  </footer>
+  <p id="error" class="error" style="display:none;"></p>
 
-  <script src="script.js" defer></script>
+  <script src="script.js"></script>
 </body>
 </html>
