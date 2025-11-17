@@ -1,17 +1,47 @@
-const factElement = document.getElementById('fact');
-const button = document.getElementById('newFact');
+const factEl = document.getElementById('fact');
+const btn = document.getElementById('newFact');
+const errEl = document.getElementById('error');
 
-async function getFact() {
-  try {
-    const response = await fetch('https://uselessfacts.jsph.pl/api/v2/facts/random');
-    const data = await response.json();
-    factElement.textContent = data.text;
-  } catch (error) {
-    factElement.textContent = "Oops! Couldn't load a fact. Try again.";
+function withTimeout(ms, controller = new AbortController()){
+  const id = setTimeout(() => controller.abort(), ms);
+  return { signal: controller.signal, clear: () => clearTimeout(id) };
+}
+
+async function getJSON(url, { timeout = 8000 } = {}){
+  const { signal, clear } = withTimeout(timeout);
+  try{
+    const res = await fetch(url, { signal, headers: { 'Accept': 'application/json' } });
+    if(!res.ok) throw new Error(`HTTP ${res.status}`);
+    return await res.json();
+  } finally {
+    clear();
   }
 }
 
-button.addEventListener('click', getFact);
+function showLoading(){
+  errEl.hidden = true;
+  errEl.textContent = '';
+  factEl.innerHTML = 'Loading <span class="loading" aria-hidden="true"></span>';
+}
 
-// Load a fact on page start
-getFact();
+function showError(msg){
+  errEl.textContent = `⚠️ ${msg}`;
+  errEl.hidden = false;
+}
+
+// Use Cat Facts API: https://catfact.ninja/fact
+async function loadFact(){
+  showLoading();
+  try{
+    const data = await getJSON('https://catfact.ninja/fact');
+    factEl.textContent = data.fact;
+  }catch(e){
+    factEl.textContent = 'No fact available right now.';
+    showError(`Could not load fact (${e.message}). Try again.`);
+  }
+}
+
+btn.addEventListener('click', loadFact);
+
+// Load one fact on initial page view
+loadFact();
